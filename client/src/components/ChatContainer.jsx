@@ -86,7 +86,7 @@ const ChatContainer = ({ currentChat, socket }) => {
           <div className="avatar">
             <img
               src={`data:image/svg+xml;base64,${currentChat.avatarImage}`}
-              alt=""
+              alt="userImage"
             />
           </div>
           <div className="username">
@@ -124,7 +124,7 @@ const Container = styled.div`
   grid-template-rows: 10% 80% 10%;
   gap: 0.1rem;
   overflow: hidden;
-  @media screen and (min-width: 720px) and (max-width: 1080px) {
+  @media screen and (min-width: 420px) and (max-width: 1080px) {
     grid-template-rows: 15% 70% 15%;
   }
   .chat-header {

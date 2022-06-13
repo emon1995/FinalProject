@@ -16,6 +16,10 @@ const Chat = () => {
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
 
+  // const {username} = useParams();
+
+  // console.log("current user", currentUser);
+
   useEffect(() => {
     async function myUser() {
       if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {

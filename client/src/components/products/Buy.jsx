@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { showProduct } from "../../utils/APIRoutes";
-import loader from '../../assets/loader.gif';
-
+import loader from "../../assets/loader.gif";
+import { BiArrowBack } from "react-icons/bi";
 
 const Buy = () => {
-    const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     axios
@@ -15,32 +15,38 @@ const Buy = () => {
       .then((res) => setPosts(res.data))
       .catch((err) => console.log(err));
   });
-
+  
   return (
     <>
-    <Maincontainer>
-    <Link style={{textAlign: "center", textDecoration: "none"}} to="/profile">Back to Profile</Link>
-      
-    <div className="container" >
-      {!posts.length ? (
-        <img src={loader} alt="loading..." />
-      ) : (
-        
-        posts.map((post, key) => {
-          return (
+      <LinkTag>
+        <Link
+          style={{ textAlign: "center", textDecoration: "none" }}
+          to="/profile"
+        >
+          <BiArrowBack />
+          Back to Profile
+        </Link>
+      </LinkTag>
+      <Maincontainer>
+        <div className="container">
+          {!posts.length ? (
+            <img src={loader} alt="loading..." />
+          ) : (
+            posts.map((post, key) => {
+              return (
                 <div className="card" key={key}>
                   <div className="card-header">
                     <img src={`/images/${post.productImage}`} alt="rover" />
                   </div>
                   <div className="card-body">
-                    <span className="tag tag-teal">{post.authorname}</span>
+                    <span className="tag tag-teal">৳ {post.price}</span>
                     <h4>{post.title}</h4>
                     <p>{post.product}</p>
-                    <div className="d-flex" style={{alignItems: "center"}}>
+                    <div className="d-flex" style={{ alignItems: "center" }}>
                       <div className="bg">
                         <Link
                           className="btn btn-success p-1"
-                          to={`/update/${post._id}`}
+                          to={`/${post.username}`}
                           style={{
                             textDecoration: "none",
                             color: "white",
@@ -48,40 +54,49 @@ const Buy = () => {
                             padding: "1rem",
                             borderRadius: "5px",
                             marginLeft: "5px",
-                            cursor: "pointer"
+                            cursor: "pointer",
                           }}
                         >
                           {" "}
-                          Bidding Product
+                          Biding Product
                         </Link>
                       </div>
                     </div>
                     <div className="user">
-                      <img src={`/images/${post.productImage}`} alt="user" />
+                      <img
+                        src={`data:image/svg+xml;base64,${post.userImage}`}
+                        alt="userImage"
+                      />
                       <div className="user-info">
-                        <h5>{post.postDate}</h5>
-                        <small>2h ago</small>
+                        <h5>{post.username}</h5>
+                        <small>{post.updatedAt}</small>
                       </div>
                     </div>
                   </div>
                 </div>
-          );
-        })
-      )}
-    </div>
-    </Maincontainer>
+              );
+            })
+          )}
+        </div>
+      </Maincontainer>
     </>
   );
 };
 
+const LinkTag = styled.div`
+  text-align: center;
+  background-color: #131324;
+  padding: 10px;
+`;
+
 const Maincontainer = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-margin: 0;
-font-family: "Roboto", sans-serif;
-color: #10182f;
-background-color: #131324;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  color: #10182f;
+  background-color: #131324;
   .container {
     display: flex;
     width: 1040px;
@@ -136,7 +151,7 @@ background-color: #131324;
   }
   .user {
     display: flex;
-    margin-top: auto;
+    margin-top: 50px;
   }
 
   .user img {

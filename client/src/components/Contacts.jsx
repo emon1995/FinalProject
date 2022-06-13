@@ -34,7 +34,7 @@ const Contacts = ({ contacts, changeChat }) => {
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h3>snappy</h3>
+            <h3>RTCWA</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {
@@ -157,7 +157,7 @@ const Container = styled.div`
         color: white;
       }
     }
-    @media screen and (min-width: 720px) and (max-width: 1080px) {
+    @media screen and (min-width: 420px) and (max-width: 1080px) {
       gap: 0.5rem;
       .username {
         h2 {

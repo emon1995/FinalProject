@@ -1,93 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { addProduct } from "../../utils/APIRoutes";
 import Sell from "./Sell";
 import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 const AddProduct = () => {
   const [title, setTitle] = useState("");
   const [product, setProduct] = useState("");
-  const [authorname, setAuthorname] = useState("");
+  const [price, setPrice] = useState("");
   const [message, setMessage] = useState("");
   const [fileName, setFileName] = useState("");
 
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
+  const targetFile = useRef(null);
+  const targetTitle = useRef(null);
+  const targetProduct = useRef(null);
+  const targetPriceName = useRef(null);
+
+  const onChangeHadler = (e) => {
+    setTitle(targetTitle.current.value);
+    setProduct(targetProduct.current.value);
+    setPrice(targetPriceName.current.value);
   };
 
   const onChangeFile = (e) => {
-    setFileName(e.target.files[0]);
+    const file = targetFile.current.files[0];
+    setFileName(file);
   };
 
-  const changeOnClick = async(e) => {
+  const changeOnClick =  async(e) => {
     e.preventDefault();
+
+    const formData = new FormData();
 
     const data = await JSON.parse(
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
     );
 
-
-    const formData = new FormData();
-
     formData.append("title", title);
     formData.append("product", product);
-    formData.append("authorname", authorname);
+    formData.append("price", price);
     formData.append("productImage", fileName);
-    formData.append("users", data._id)
-
-    console.log("data", data._id);
-
-    // const products = {
-    //   title,
-    //   product,
-    //   authorname,
-    //   fileName,
-    //   from: data._id,
-    // };
+    formData.append("users", data._id);
+    formData.append("username", data.username);
+    formData.append("userImage", data.avatarImage);
 
     setTitle("");
     setProduct("");
-    setAuthorname("");
+    setPrice("");
 
     axios
-      .post(addProduct,formData)
+      .post(addProduct, formData)
       .then((res) => setMessage(res.data))
       .catch((err) => {
         console.log(err);
       });
-
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
-      }else{
-        toast.error(message, toastOptions);
-      }
   };
 
   return (
-    <>
+    <div>
       <FormContainer>
         <div className="container">
           <h1>Add New Product</h1>
-          {/* <span className="message">{mess}</span> */}
-          <form onSubmit={changeOnClick} encType="multipart/form-data">
-            <div className="form-group">
-              <label htmlFor="authorname">Author Name</label>
-              <input
-                type="text"
-                value={authorname}
-                className="form-control"
-                placeholder="Author Name"
-                onChange={(e) => setAuthorname(e.target.value)}
-              />
-            </div>
+          <span className="message">{message}</span>
+          <form
+            action="/sell"
+            onSubmit={changeOnClick}
+            encType="multipart/form-data"
+            method="post"
+          >
             <div className="form-group">
               <label htmlFor="title">Title</label>
               <input
@@ -95,7 +78,21 @@ const AddProduct = () => {
                 value={title}
                 className="form-control"
                 placeholder="Title"
-                onChange={(e) => setTitle(e.target.value)}
+                ref={targetTitle}
+                onChange={onChangeHadler}
+                // onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="price">Price</label>
+              <input
+                type="text"
+                value={price}
+                className="form-control"
+                placeholder="Price"
+                ref={targetPriceName}
+                onChange={onChangeHadler}
+                // onChange={(e) => setAuthorname(e.target.value)}
               />
             </div>
             <div className="form-group">
@@ -103,7 +100,9 @@ const AddProduct = () => {
               <textarea
                 className="form-control"
                 value={product}
-                onChange={(e) => setProduct(e.target.value)}
+                ref={targetProduct}
+                onChange={onChangeHadler}
+                // onChange={(e) => setProduct(e.target.value)}
                 rows="3"
               ></textarea>
             </div>
@@ -113,21 +112,27 @@ const AddProduct = () => {
                 type="file"
                 filename="productImage"
                 className="form-control"
+                ref={targetFile}
                 onChange={onChangeFile}
               />
             </div>
             <button type="submit" className="btn-primary">
               Product Add
             </button>
-            <Link style={{textAlign: "center", textDecoration: "none"}} to="/profile">Back to Profile</Link>
+            <Link
+              style={{ textAlign: "center", textDecoration: "none" }}
+              to="/profile"
+            >
+              Back to Profile
+            </Link>
           </form>
         </div>
       </FormContainer>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Sell />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -139,10 +144,12 @@ const FormContainer = styled.div`
   gap: 1rem;
   align-items: center;
   background-color: #131324;
+
   h1 {
     color: white;
     text-transform: uppercase;
     text-align: center;
+    margin-top: 20px;
   }
   .brand {
     display: flex;
@@ -164,7 +171,7 @@ const FormContainer = styled.div`
     gap: 2rem;
     background-color: #00000076;
     border-radius: 2rem;
-    padding: 3rem 5rem;
+    padding: 1rem 2rem;
   }
   input {
     background-color: transparent;

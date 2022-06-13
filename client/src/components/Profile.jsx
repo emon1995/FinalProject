@@ -1,60 +1,25 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const [userName, setUserName] = useState();
   const [userImage, setUserImage] = useState();
   const [userEmail, setUserEmail] = useState();
-  const [currentUser, setCurrentUser] = useState(undefined);
-  const navigate = useNavigate;
-
-  useEffect(() => {
-    async function myUser() {
-      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-        navigate("/login");
-      } else {
-        setCurrentUser(
-          await JSON.parse(
-            localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-          )
-        );
-      }
-    }
-    myUser();
-  }, [navigate]);
 
   useEffect(() => {
     async function myData() {
-      if (currentUser) {
-        if (currentUser.username) {
-          const data = await JSON.parse(
-            localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-          );
-          setUserName(data.username);
-          setUserImage(data.avatarImage);
-          setUserEmail(data.email);
-        } else {
-          navigate("/register");
-        }
+      const data = await JSON.parse(
+        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+      );
+      if (data) {
+        setUserName(data.username);
+        setUserImage(data.avatarImage);
+        setUserEmail(data.email);
       }
     }
     myData();
-  }, [currentUser, navigate]);
-
-  // useEffect(() => {
-  //   async function myData() {
-  //     const data = await JSON.parse(
-  //       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-  //     );
-  //     if (data) {
-  //       setUserName(data.username);
-  //       setUserImage(data.avatarImage);
-  //       setUserEmail(data.email);
-  //     }
-  //   }
-  //   myData();
-  // }, []);
+  }, []);
 
   return (
     <Container>
@@ -67,15 +32,48 @@ const Profile = () => {
           />
           <h2 className="username">User Name: {userName}</h2>
           <h2 className="email">User Email: {userEmail}</h2>
-          <div className="button">
-            <Button>
-              <Link to="/addProduct">Sell</Link>
-            </Button>
-            <Button primary>
-              <Link to="/buy">Buy</Link>
-            </Button>
+          <div className="button" style={{ marginBottom: "2rem" }}>
+            <div>
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: "white",
+                  backgroundColor: "blue",
+                  padding: "1rem 2rem",
+                  borderRadius: "5px",
+                  marginRight: "5px",
+                  alignItems: "center",
+                }}
+                to="/addProduct"
+              >
+                Sell
+              </Link>
+            </div>
+            <div>
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: "white",
+                  backgroundColor: "red",
+                  padding: "1rem 2rem",
+                  borderRadius: "5px",
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                }}
+                to="/buy"
+              >
+                Buy
+              </Link>
+            </div>
           </div>
-          <Link style={{ textDecoration: "none", marginLeft: "115px" }} to="/">
+          <Link
+            style={{
+              textDecoration: "none",
+              marginLeft: "115px",
+              marginTop: "1rem",
+            }}
+            to="/"
+          >
             Back to Home
           </Link>
         </div>
@@ -140,16 +138,17 @@ const Container = styled.div`
   }
 `;
 
-const Button = styled.button`
-  /* Adapt the colors based on primary prop */
-  background: ${(props) => (props.primary ? "palevioletred" : "tomato")};
-  color: ${(props) => (props.primary ? "white" : "white")};
+// const Button = styled.button`
+//   /* Adapt the colors based on primary prop */
+//   background: ${(props) => (props.primary ? "palevioletred" : "tomato")};
+//   color: ${(props) => (props.primary ? "white" : "white")};
 
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-  border-radius: 3px;
-`;
+//   font-size: 1em;
+//   margin: 1em;
+//   padding: 0.25em 1em;
+//   border: 2px solid palevioletred;
+//   border-radius: 3px;
+//   cursor: "pointer"
+// `;
 
 export default Profile;

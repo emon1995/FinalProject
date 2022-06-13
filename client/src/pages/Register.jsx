@@ -90,7 +90,7 @@ const Register = () => {
         <form action="" onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h1>snappy</h1>
+            <h1>RTCWA</h1>
           </div>
           <input
             type="text"
@@ -156,7 +156,7 @@ const FormContainer = styled.div`
     gap: 2rem;
     background-color: #00000076;
     border-radius: 2rem;
-    padding: 3rem 5rem;
+    padding: 2rem 5rem;
   }
   input {
     background-color: transparent;

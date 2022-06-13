@@ -3,11 +3,14 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { deleteProduct, sellProduct } from "../../utils/APIRoutes";
-import loader from '../../assets/loader.gif';
+import loader from "../../assets/loader.gif";
 
 const Sell = () => {
   const [posts, setPosts] = useState([]);
   const [product, setProduct] = useState([]);
+  const [userName, setUserName] = useState();
+  const [userImage, setUserImage] = useState();
+  // const [userEmail, setUserEmail] = useState();
 
   //DELETE PRODUCT BY ID
   const deleteProducts = (id) => {
@@ -19,99 +22,119 @@ const Sell = () => {
   };
 
   useEffect(() => {
-    async function mydata(){
+    async function mydata() {
       const dataP = await JSON.parse(
         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
       );
 
-      axios
-      .get(`${sellProduct}${dataP._id}`)
-      .then((res) => setPosts(res.data))
-      .catch((err) => console.log(err));
+      await axios
+        .get(`${sellProduct}${dataP._id}`)
+        .then((res) => setPosts(res.data))
+        .catch((err) => console.log(err));
     }
-    
-    mydata()
+
+    mydata();
   });
+
+  useEffect(() => {
+    async function myData() {
+      const data = await JSON.parse(
+        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+      );
+      if (data) {
+        setUserName(data.username);
+        setUserImage(data.avatarImage);
+        // setUserEmail(data.email);
+      }
+    }
+    myData();
+  }, []);
 
   return (
     <Maincontainer>
-      <div className="container"  >
-      {!posts.length ? (
-        <img src={loader} alt="loading..." />
-      ) : (
-        posts.map((post, key) => {
-          return (
-                <div className="card" key={key}>
-                  <div className="card-header">
-                    <img src={`/images/${post.productImage}`} alt="rover" />
-                  </div>
-                  <div className="card-body">
-                    <span className="tag tag-teal">{post.authorname}</span>
-                    <h4>{post.title}</h4>
-                    <p>{post.product}</p>
-                    <div className="d-flex" style={{
-                            display: "flex"
-                          }}>
-                        <Link
-                          className="btn-success"
-                          to={`/update/${post._id}`}
-                          style={{
-                            textDecoration: "none",
-                            color: "white",
-                            backgroundColor: "blue",
-                            padding: "10px",
-                            borderRadius: "5px",
-                            marginRight: "5px",
-                            alignItems: "center",
-                          }}
-                        >
-                          {" "}
-                          Edit Product
-                        </Link>
-                      <div>
-                        <div
-                          className="btn-danger"
-                          onClick={() => deleteProducts(post._id)}
-                          style={{
-                            textDecoration: "none",
-                            color: "white",
-                            backgroundColor: "red",
-                            padding: "1rem",
-                            borderRadius: "5px",
-                            marginLeft: "5px",
-                            cursor: "pointer"
-                          }}
-                        >
-                          {" "}
-                          Delete Product
-                        </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="user">
-                      <img src={`/images/${post.productImage}`} alt="user" />
-                      <div className="user-info">
-                        <h5>{post.postDate}</h5>
-                        <small>2h ago</small>
+      <div className="container">
+        {!posts.length ? (
+          <img src={loader} alt="loading..." />
+        ) : (
+          posts.map((post, key) => {
+            return (
+              <div className="card" key={key}>
+                <div className="card-header">
+                  <img src={`/images/${post.productImage}`} alt="rover" />
+                </div>
+                <div className="card-body">
+                  <span className="tag tag-teal">৳ {post.price}</span>
+                  <h4>{post.title}</h4>
+                  <p>{post.product}</p>
+                  <div
+                    className="d-flex"
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <Link
+                      className="btn-success"
+                      to={`/update/${post._id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "white",
+                        backgroundColor: "blue",
+                        padding: "8px",
+                        borderRadius: "5px",
+                        marginRight: "5px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {" "}
+                      Edit Product
+                    </Link>
+                    <div>
+                      <div
+                        className="btn-danger"
+                        onClick={() => deleteProducts(post._id)}
+                        style={{
+                          textDecoration: "none",
+                          color: "white",
+                          backgroundColor: "red",
+                          padding: "0.5rem",
+                          borderRadius: "5px",
+                          marginLeft: "5px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {" "}
+                        Delete Product
                       </div>
                     </div>
                   </div>
-          );
-        })
-      )}
+                </div>
+                <div className="user">
+                  <img
+                    src={`data:image/svg+xml;base64,${userImage}`}
+                    alt="userImage"
+                  />
+                  <div className="user-info">
+                    <h5>{userName}</h5>
+                    <small>{post.updatedAt}</small>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </Maincontainer>
   );
 };
 
 const Maincontainer = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-margin: 0;
-font-family: "Roboto", sans-serif;
-color: #10182f;
-background-color: #131324;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  color: #10182f;
+  background-color: #131324;
   .container {
     display: flex;
     width: 1040px;
@@ -167,6 +190,8 @@ background-color: #131324;
   .user {
     display: flex;
     margin-top: auto;
+    margin-left: 15px;
+    margin-bottom: 15px;
   }
 
   .user img {
